@@ -237,9 +237,10 @@ mkdir -p src/features src/entities src/shared/ui src/shared/lib src/shared/confi
 `default` 템플릿(SDK 54)은 이미 `react-native-reanimated`·`react-native-safe-area-context`를 **SDK 54 호환 버전**으로 설치해 둡니다. **무지성 `pnpm add`로 최신 버전을 덮어쓰지 마세요** (SDK 54와 어긋남). 부족한 것만 추가합니다.
 
 ```sh
-pnpm add nativewind@^4.2.1
+pnpm add nativewind@^4.2.1 class-variance-authority clsx tailwind-merge
 pnpm add -D tailwindcss@^3.4.17
 pnpm exec tailwindcss init
+mkdir -p styles
 ```
 
 > reanimated·safe-area-context가 없다면 `pnpm expo install react-native-reanimated react-native-safe-area-context`로 **SDK 호환 버전**을 받습니다 (`pnpm add` 최신 X).
@@ -309,6 +310,19 @@ import "../../styles/global.css";
 ```
 
 `className` 적용을 확인한 뒤 캐시를 지우고 실행합니다.
+
+### CVA · `cn` 유틸
+
+variant 기반 공용 UI용 패키지는 위 설치에 포함됩니다. `src/shared/lib/cn.ts`를 추가하고 `@/shared/lib`에서 export합니다.
+
+```ts
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
+```
+
+패턴·예시(`ThemedText` 등)는 `docs/styling.md`를 참고합니다.
 
 ```sh
 pnpm exec expo start -c

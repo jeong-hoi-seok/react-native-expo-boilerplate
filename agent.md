@@ -9,7 +9,7 @@ React Native + Expo 보일러플레이트입니다. 답변·작업 보고는 한
 | 프레임워크 | Expo `54.0.35` · React Native `0.81.5` |
 | UI | React `19.1.0` · `@types/react` `~19.1.10` |
 | 언어 | TypeScript (strict) |
-| 스타일 | NativeWind (1순위) |
+| 스타일 | NativeWind · CVA · `cn` (`class-variance-authority` + `tailwind-merge`) |
 | 상태 | Zustand |
 | 린트/포맷 | Biome |
 | 패키지 매니저 | **pnpm** (`npm`/`yarn`/`bun` 사용 안 함) |
@@ -20,17 +20,19 @@ React Native + Expo 보일러플레이트입니다. 답변·작업 보고는 한
 
 ## 스타일링 — NativeWind 우선
 
-모든 UI 스타일은 **NativeWind `className`**으로 작성합니다. Tailwind 유틸리티 클래스가 이 프로젝트의 1순위 스타일 방식입니다.
+모든 UI 스타일은 **NativeWind `className`**으로 작성합니다. variant가 있는 공용 컴포넌트는 **CVA** + **`cn`**(`@/shared/lib`)을 씁니다. 상세는 `docs/styling.md`를 참고합니다.
 
 | 우선순위 | 방식 | 사용 시점 |
 |---|---|---|
 | **1** | NativeWind `className` | 레이아웃, 색, 타이포, 간격, 반응형 등 **기본·권장** |
+| **1-b** | CVA + `cn` | `ThemedText`처럼 **variant 기반 공용 UI** |
 | **2** | `StyleSheet.create` | NativeWind·Tailwind로 표현이 어렵거나 불가능할 때만 |
 | **3** | inline `style` | 동적 값(런타임 계산) 등 `className`으로 대체하기 어려울 때만 |
 
 - 새 컴포넌트·화면 작성 시 `style={{ ... }}`·`StyleSheet`부터 시작하지 않습니다.
+- Tailwind 진입점: 루트 `styles/global.css`. Metro `input`·`_layout.tsx` import 경로와 일치시킵니다.
 - 스타일 관련 공식 문서는 `docs/official-docs-reference.md`의 [NativeWind Installation](https://www.nativewind.dev/docs/getting-started/installation)을 따릅니다.
-- 초기 설정·버전 요구사항은 `docs/init-setup.md` 3단계를 참고합니다.
+- 초기 설정·버전 요구사항은 `docs/init-setup.md` 3단계, 패턴·예시는 `docs/styling.md`를 참고합니다.
 
 ## 실행·스크립트
 
@@ -69,6 +71,7 @@ src/
   entities/   # 도메인 엔티티
   shared/     # 공용 UI·유틸·설정 (ui / lib / config, 세그먼트별 index.ts)
 assets/       # 이미지 등 정적 에셋 (루트, @/assets/*)
+styles/       # Tailwind 진입점 (global.css)
 docs/
 ```
 
@@ -95,6 +98,7 @@ docs/
 | 문서 | 확인 시점 |
 |---|---|
 | `docs/official-docs-reference.md` | RN·Expo·NativeWind API, 스타일링, 설정, 빌드·배포 **구현·조사 시** |
+| `docs/styling.md` | NativeWind·CVA·`cn` 패턴, 파일 위치, variant 컴포넌트 작성 |
 | `docs/init-setup.md` | 프로젝트 **최초 1회** 부트스트랩 (이후 참고 안 함) |
 | `docs/naming-convention.md` | 파일·디렉토리·식별자 추가·변경 |
 | `docs/commit-convention.md` | 커밋 작성 |
@@ -105,7 +109,7 @@ docs/
 ## 작업 원칙
 
 1. 작업 전 관련 코드·docs 확인. RN·Expo API·동작은 `docs/official-docs-reference.md`에 안내된 [React Native Archive](https://archive.reactnative.dev/docs/next/getting-started)·[Expo Docs](https://docs.expo.dev/)를 우선 참고
-2. **UI 스타일링은 NativeWind `className` 우선.** Tailwind·설정·트러블슈팅은 [NativeWind Docs](https://www.nativewind.dev/docs/getting-started/installation)와 `docs/official-docs-reference.md`를 참고
+2. **UI 스타일링은 NativeWind `className` 우선.** variant UI는 CVA + `cn`. Tailwind·설정·트러블슈팅은 [NativeWind Docs](https://www.nativewind.dev/docs/getting-started/installation), `docs/styling.md`, `docs/official-docs-reference.md`를 참고
 3. 기존 패턴 유지, 요청 범위만 수정
 4. 새 파일·디렉토리는 kebab-case
 5. 검증 가능하면 `pnpm lint` / `pnpm typecheck` 실행 후 보고
