@@ -59,6 +59,13 @@ pnpm android  # expo run:android
 | `pnpm format` | `biome format --write .` | 포맷 |
 | `pnpm typecheck` | `tsc --noEmit` | 타입 검사 |
 
+### Git hooks
+
+husky로 자동 실행됩니다 (clone·`pnpm install` 시 `prepare`로 활성화, **node 22+ 필요**).
+
+- **pre-commit** — `nano-staged`가 스테이징 파일만 Biome 자동수정·재-stage
+- **pre-push** — `pnpm typecheck`
+
 스토어 배포용 빌드는 [EAS Build](https://docs.expo.dev/build/introduction/)를 씁니다. 상세는 `wiki/`에 정리합니다.
 
 ## 문서

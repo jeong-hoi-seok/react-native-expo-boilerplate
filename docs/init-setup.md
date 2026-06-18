@@ -47,7 +47,7 @@ node-linker=hoisted
 
 | 도구 | 용도 |
 |---|---|
-| [Node.js](https://nodejs.org/) LTS | 런타임 |
+| [Node.js](https://nodejs.org/) **22+** | 런타임 (`nano-staged@1.x` git hook이 node `^22 \|\| >=24` 요구) |
 | [pnpm](https://pnpm.io/installation) | 패키지 매니저 (**필수**) |
 | Xcode (macOS) | iOS 빌드 |
 | Android Studio | Android 빌드 |
@@ -360,7 +360,59 @@ rm -f eslint.config.js .eslintrc.js .eslintrc.json
 
 에디터는 저장소의 `.vscode/settings.json`(Biome + Tailwind IntelliSense)을 그대로 사용합니다.
 
-## 5단계: 검증
+## 5단계: Git hooks (husky + nano-staged)
+
+커밋·푸시 전에 품질 게이트를 자동 실행합니다.
+
+| 훅 | 실행 | 목적 |
+|---|---|---|
+| `pre-commit` | `pnpm exec nano-staged` | **스테이징된 파일만** Biome 자동수정 후 재-stage |
+| `pre-push` | `pnpm typecheck` | 푸시 전 전체 타입 검사 |
+
+> ⚠️ **node 버전** — `nano-staged@1.x`는 **node `^22 || >=24`**를 요구합니다. 협업자 node 버전이 낮으면 `nano-staged@0.8` 또는 아래 Biome 네이티브 방식을 쓰세요.
+
+### 설치
+
+```sh
+pnpm add -D husky nano-staged
+pnpm exec husky init   # .husky/ 생성 + package.json에 "prepare": "husky" 추가
+```
+
+`husky init`이 만든 `.husky/pre-commit`(기본 `pnpm test`)을 교체하고 `pre-push`를 추가합니다. (husky v9 = 셰뱅·부트스트랩 줄 불필요, 명령만)
+
+```sh
+# .husky/pre-commit
+pnpm exec nano-staged
+```
+
+```sh
+# .husky/pre-push
+pnpm typecheck
+```
+
+### nano-staged 설정 (`package.json`)
+
+```json
+{
+  "nano-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc,css}": "biome check --write --no-errors-on-unmatched"
+  }
+}
+```
+
+- `biome check --write`가 스테이징 파일을 자동수정 → nano-staged가 **수정분을 재-stage**합니다.
+- 고칠 수 없는 lint 에러는 exit 1 → 커밋 차단(의도된 동작).
+
+> **대안 — Biome 네이티브 `--staged`**: 이 프로젝트는 lint·format을 Biome 하나로 처리하므로, nano-staged 없이 `biome check --staged --write`만으로도 됩니다. 단 자동수정분 재-stage는 직접 `git add`해야 합니다. 멀티 툴체인이 아니면 둘 다 유효 — auto-fix+restage 편의는 nano-staged, 의존성 최소화는 Biome 네이티브.
+
+### 동작 확인
+
+```sh
+git config core.hooksPath          # .husky/_ 출력 확인
+git hook run pre-push              # typecheck 실행 확인
+```
+
+## 6단계: 검증
 
 B 방식(임시 디렉터리 병합)을 썼다면, `docs/`, `agent.md`, `README.md`, `.vscode/`가 그대로인지 먼저 확인합니다.
 

@@ -46,6 +46,18 @@ React Native + Expo 보일러플레이트입니다. 답변·작업 보고는 한
 - `pnpm start`는 JS 번들만 갱신합니다. 네이티브 모듈·`babel`/`metro`/`app.json` 변경 후에는 `pnpm ios` / `pnpm android`로 재빌드합니다.
 - 스토어 배포는 EAS Build. 상세는 `wiki/` 참고.
 
+### Git hooks (husky)
+
+`prepare: "husky"`로 clone·install 시 자동 활성화됩니다. **node 22+ 필요** (`nano-staged@1.x`).
+
+| 훅 | 실행 | 동작 |
+|---|---|---|
+| `pre-commit` | `pnpm exec nano-staged` | 스테이징 파일만 `biome check --write` 자동수정·재-stage, 못 고치는 에러는 커밋 차단 |
+| `pre-push` | `pnpm typecheck` | 푸시 전 `tsc --noEmit` |
+
+- nano-staged 글롭은 `package.json`의 `"nano-staged"` 필드. 설정·근거는 `docs/init-setup.md` 5단계.
+- 훅이 막더라도 임의로 `--no-verify`로 우회하지 않습니다. 에러를 고치고 다시 커밋·푸시합니다.
+
 ## 아키텍처
 
 Feature-Sliced Design. slice 간 결합은 `index.ts` public API로만 합니다.
