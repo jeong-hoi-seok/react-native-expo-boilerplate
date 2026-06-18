@@ -44,7 +44,7 @@ React Native + Expo 보일러플레이트입니다. 답변·작업 보고는 한
 | `pnpm typecheck` | `tsc --noEmit` | 타입 검사 |
 
 - `pnpm start`는 JS 번들만 갱신합니다. 네이티브 모듈·`babel`/`metro`/`app.json` 변경 후에는 `pnpm ios` / `pnpm android`로 재빌드합니다.
-- 스토어 배포는 EAS Build. 상세는 `wiki/` 참고.
+- 스토어 배포는 EAS Build.
 
 ### Git hooks (husky)
 
@@ -70,7 +70,6 @@ src/
   shared/     # 공용 UI·유틸·설정 (ui / lib / config, 세그먼트별 index.ts)
 assets/       # 이미지 등 정적 에셋 (루트, @/assets/*)
 docs/
-wiki/         # AI·팀 지식 기록 (FSD 아님, 루트 유지)
 ```
 
 - **FSD 레이어(`app`·`features`·`entities`·`shared`)는 모두 `src/` 아래**에 둡니다. `features`·`entities`·`shared`를 루트에 두지 않습니다.
@@ -82,12 +81,11 @@ wiki/         # AI·팀 지식 기록 (FSD 아님, 루트 유지)
 
 - slice 외부 → `src/features/foo/index.ts`, `@/shared/ui` 등 public API만 import
 - 같은 계층 slice 내부 파일 직접 import 금지
-- 공용 코드는 `src/shared`, 재사용 지식은 `wiki`
+- 공용 코드는 `src/shared`
 
 **네이밍** — `docs/naming-convention.md`  
 **커밋** — `docs/commit-convention.md`  
 **MR/PR** — `docs/git-merge-request-guide.md`  
-**wiki** — `docs/ai-wiki-guide.md`  
 **공식 문서** — `docs/official-docs-reference.md` (RN·Expo·NativeWind API·동작 확인 시 필수)
 
 ## docs 확인
@@ -101,14 +99,12 @@ wiki/         # AI·팀 지식 기록 (FSD 아님, 루트 유지)
 | `docs/naming-convention.md` | 파일·디렉토리·식별자 추가·변경 |
 | `docs/commit-convention.md` | 커밋 작성 |
 | `docs/git-merge-request-guide.md` | MR/PR 작성 |
-| `docs/ai-wiki-guide.md` | wiki 작성·갱신 |
 
-- `wiki/index.md`가 있으면 코드 수정 전에 함께 확인합니다.
 - docs와 기존 코드 패턴이 다르면 docs를 우선합니다.
 
 ## 작업 원칙
 
-1. 작업 전 관련 코드·docs·`wiki/index.md` 확인. RN·Expo API·동작은 `docs/official-docs-reference.md`에 안내된 [React Native Archive](https://archive.reactnative.dev/docs/next/getting-started)·[Expo Docs](https://docs.expo.dev/)를 우선 참고
+1. 작업 전 관련 코드·docs 확인. RN·Expo API·동작은 `docs/official-docs-reference.md`에 안내된 [React Native Archive](https://archive.reactnative.dev/docs/next/getting-started)·[Expo Docs](https://docs.expo.dev/)를 우선 참고
 2. **UI 스타일링은 NativeWind `className` 우선.** Tailwind·설정·트러블슈팅은 [NativeWind Docs](https://www.nativewind.dev/docs/getting-started/installation)와 `docs/official-docs-reference.md`를 참고
 3. 기존 패턴 유지, 요청 범위만 수정
 4. 새 파일·디렉토리는 kebab-case
@@ -129,7 +125,7 @@ wiki/         # AI·팀 지식 기록 (FSD 아님, 루트 유지)
 | 패키지 매니저·빌드·실행 방식 변경 | 기술 스택·실행·스크립트 |
 | AI가 매번 알아야 할 새 전역 규칙 | 해당 섹션 또는 작업 원칙 |
 
-**갱신하지 않는 경우** — `wiki/` 또는 `docs/`에 기록합니다.
+**갱신하지 않는 경우** — `docs/`에 기록합니다.
 
 - 기능별 구현 상세·시행착오
 - 일회성 설정·실험 기록

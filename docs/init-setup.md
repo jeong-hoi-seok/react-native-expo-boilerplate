@@ -1,7 +1,7 @@
 # 초기 설치 가이드
 
 > **이 문서는 프로젝트 최초 부트스트랩(1회)에만 사용합니다.**  
-> 이후 의존성 추가·기능 설정은 `agent.md`·`wiki/`를 따릅니다.
+> 이후 의존성 추가·기능 설정은 `agent.md`를 따릅니다.
 
 React Native + Expo + NativeWind + Biome으로 이 보일러플레이트를 부트스트랩합니다.
 
@@ -41,7 +41,7 @@ node-linker=hoisted
 
 설치 명령은 문서 전체에서 `pnpm add`, `pnpm create`, `pnpm exec`만 사용합니다.
 
-> Zustand 등 추가 라이브러리는 `agent.md`·`wiki/`를 참고하세요.
+> Zustand 등 추가 라이브러리는 `agent.md`를 참고하세요.
 
 ## 사전 요구사항
 
@@ -209,10 +209,10 @@ mv components hooks constants src/ 2>/dev/null || true
 
 ## 2단계: FSD 폴더 (src 아래)
 
-FSD 레이어(`features`·`entities`·`shared`)는 **`src/` 아래**에 둡니다. `wiki`는 FSD가 아니므로 루트에 둡니다.
+FSD 레이어(`features`·`entities`·`shared`)는 **`src/` 아래**에 둡니다.
 
 ```sh
-mkdir -p src/features src/entities src/shared/ui src/shared/lib src/shared/config wiki
+mkdir -p src/features src/entities src/shared/ui src/shared/lib src/shared/config
 ```
 
 템플릿 데모 컴포넌트를 FSD에 맞게 `src/shared`로 재배치합니다. (1단계에서 옮긴 `src/components`·`src/hooks`·`src/constants` 정리)
