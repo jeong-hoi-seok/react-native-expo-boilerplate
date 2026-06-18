@@ -190,7 +190,7 @@ mv components hooks constants src/ 2>/dev/null || true
 |---|---|
 | Expo SDK 54 | `src/app` 자동 인식. 추가 config plugin 불필요 |
 | 우선순위 | `src/app`과 루트 `app/`이 동시에 있으면 **`src/app`만** 사용됨 — 이동 후 루트 `app/`이 남지 않았는지 확인 |
-| 루트에 둘 것 | `app.json`, `package.json`, `babel.config.js`, `metro.config.js`, `tsconfig.json`, `global.css`, `assets/` 등 |
+| 루트에 둘 것 | `app.json`, `package.json`, `babel.config.js`, `metro.config.js`, `tsconfig.json`, `styles/`, `assets/` 등 |
 
 `tsconfig.json`의 path alias를 `./src/*`로 바꾸고, **루트 `assets/`용 별칭을 추가**합니다. (이미지는 `app.json`이 `./assets/...`로도 참조하므로 루트에 유지)
 
@@ -212,7 +212,7 @@ mv components hooks constants src/ 2>/dev/null || true
 FSD 레이어(`features`·`entities`·`shared`)는 **`src/` 아래**에 둡니다.
 
 ```sh
-mkdir -p src/features src/entities src/shared/ui src/shared/lib src/shared/config
+mkdir -p src/features src/entities src/shared/ui src/shared/lib src/shared/config styles
 ```
 
 템플릿 데모 컴포넌트를 FSD에 맞게 `src/shared`로 재배치합니다. (1단계에서 옮긴 `src/components`·`src/hooks`·`src/constants` 정리)
@@ -258,7 +258,7 @@ module.exports = {
 };
 ```
 
-루트 `global.css`:
+`styles/global.css`:
 
 ```css
 @tailwind base;
@@ -291,7 +291,7 @@ const { withNativeWind } = require("nativewind/metro");
 
 const config = getDefaultConfig(__dirname);
 
-module.exports = withNativeWind(config, { input: "./global.css" });
+module.exports = withNativeWind(config, { input: "./styles/global.css" });
 ```
 
 ### 연결
@@ -299,7 +299,7 @@ module.exports = withNativeWind(config, { input: "./global.css" });
 `src/app/_layout.tsx` 최상단:
 
 ```tsx
-import "../../global.css";
+import "../../styles/global.css";
 ```
 
 루트 `nativewind-env.d.ts` (`nativewind.d.ts`, `app.d.ts` 이름 금지):

@@ -19,7 +19,7 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "tailwindCSS.experimental.configFile": "global.css",
+  "tailwindCSS.experimental.configFile": "styles/global.css",
   "tailwindCSS.classAttributes": [
     "class",
     "className",
