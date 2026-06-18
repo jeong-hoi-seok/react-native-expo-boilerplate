@@ -53,22 +53,24 @@ Feature-Sliced Design. slice 간 결합은 `index.ts` public API로만 합니다
 ```txt
 src/
   app/        # Expo Router 라우트 (Expo SDK 54+, src/app 자동 인식)
-features/     # 기능 slice (ui / model / api / lib / index.ts)
-entities/     # 도메인 엔티티
-shared/       # 공용 UI·유틸·타입
-assets/
+  features/   # 기능 slice (ui / model / api / lib / index.ts)
+  entities/   # 도메인 엔티티
+  shared/     # 공용 UI·유틸·설정 (ui / lib / config, 세그먼트별 index.ts)
+assets/       # 이미지 등 정적 에셋 (루트, @/assets/*)
 docs/
-wiki/         # AI·팀 지식 기록
+wiki/         # AI·팀 지식 기록 (FSD 아님, 루트 유지)
 ```
 
+- **FSD 레이어(`app`·`features`·`entities`·`shared`)는 모두 `src/` 아래**에 둡니다. `features`·`entities`·`shared`를 루트에 두지 않습니다.
 - 라우트는 루트 `app/`이 아니라 **`src/app/`** 에 둡니다. [Top-level src directory](https://docs.expo.dev/router/reference/src-directory/)
-- `tsconfig.json` path alias `@/*`는 `./src/*`를 가리킵니다.
+- `shared`는 세그먼트로 나눕니다 — `shared/ui`(컴포넌트), `shared/lib`(훅·유틸), `shared/config`(상수·테마). 각 세그먼트에 `index.ts` 배럴을 둡니다.
+- `tsconfig.json` path alias `@/*`는 `./src/*`를 가리킵니다. 이미지 등 정적 에셋은 루트 `assets/`에 두고 `@/assets/*`(→ `./assets/*`)로 import합니다. (`app.json` 아이콘·스플래시는 `./assets/...` 루트 경로 그대로)
 
 **import 규칙**
 
-- slice 외부 → `features/foo/index.ts` 등 public API만 import
+- slice 외부 → `src/features/foo/index.ts`, `@/shared/ui` 등 public API만 import
 - 같은 계층 slice 내부 파일 직접 import 금지
-- 공용 코드는 `shared`, 재사용 지식은 `wiki`
+- 공용 코드는 `src/shared`, 재사용 지식은 `wiki`
 
 **네이밍** — `docs/naming-convention.md`  
 **커밋** — `docs/commit-convention.md`  

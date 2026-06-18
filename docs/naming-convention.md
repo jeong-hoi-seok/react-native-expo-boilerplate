@@ -76,7 +76,7 @@ export const DEFAULT_PAGE_SIZE = 20;
 FSD slice 내부 디렉토리는 고정 이름 사용.
 
 ```
-features/user-profile/
+src/features/user-profile/
 ├── ui/           # 컴포넌트
 ├── model/        # 상태, 타입, 비즈니스 로직
 ├── api/          # 외부 통신

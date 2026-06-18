@@ -56,12 +56,21 @@ node-linker=hoisted
 
 `default`는 Expo Router + TypeScript + `expo-router/entry` 진입점입니다. 다른 템플릿(`tabs`, `blank-typescript`)도 가능합니다.
 
+> **⚠️ SDK 버전 핀 — 템플릿 버전을 명시합니다.**
+> `create-expo-app@latest --template default`는 **항상 최신 SDK**(현재 SDK 56)를 생성합니다. 이 보일러플레이트는 **SDK 54 고정**이므로, 템플릿 패키지 버전을 핀해 처음부터 SDK 54로 생성합니다.
+>
+> ```sh
+> --template expo-template-default@54.0.35
+> ```
+>
+> 최신(SDK 56)으로 생성한 뒤 `expo`/`react`/`react-native` 3개만 다운그레이드하면 나머지 `expo-*` 패키지가 SDK 56에 남아 **빌드가 깨집니다**. 반드시 템플릿 버전으로 생성하세요. (`expo-template-default` 버전 = 대응 SDK 패치 버전)
+
 ### 1-A단계: create-expo-app (루트 직접)
 
 루트가 비어 있거나 Expo 관련 파일만 덮어써도 될 때:
 
 ```sh
-pnpm create expo-app@latest . --template default --yes
+pnpm create expo-app@latest . --template expo-template-default@54.0.35 --yes
 ```
 
 ### 1-B단계: create-expo-app (임시 디렉터리 → 병합)
@@ -74,7 +83,7 @@ pnpm create expo-app@latest . --template default --yes
 
 ```sh
 cd ..   # react-native-expo-boilerplate 의 부모 디렉터리
-pnpm create expo-app@latest expo-bootstrap-tmp --template default --yes
+pnpm create expo-app@latest expo-bootstrap-tmp --template expo-template-default@54.0.35 --yes
 ```
 
 #### 2) 보일러플레이트 파일 보존 목록
@@ -166,40 +175,56 @@ pnpm add expo@54.0.35 react@19.1.0 react-native@0.81.5
 pnpm add -D @types/react@~19.1.10
 ```
 
-### `src/app`으로 라우트 이동 (A·B 공통)
+### `src/`로 코드 이동 (A·B 공통)
 
-템플릿은 루트 `app/`을 생성합니다. 보일러플레이트 규약에 맞게 **`src/app/`** 으로 옮깁니다.
+SDK 54 `default` 템플릿은 **루트에** `app/`, `components/`, `hooks/`, `constants/`를 만들고, alias는 `@/*` → `./*`입니다. 보일러플레이트는 **모든 소스를 `src/` 아래**에 두므로 함께 옮깁니다. (라우트뿐 아니라 `@/components` 등 데모 import가 `./src/*`로 해소되도록)
 
 ```sh
 mkdir -p src
 mv app src/app
+# 템플릿 데모 소스도 src로 (alias가 ./src/*를 가리키므로 같이 이동해야 import가 깨지지 않음)
+mv components hooks constants src/ 2>/dev/null || true
 ```
 
 | 항목 | 내용 |
 |---|---|
 | Expo SDK 54 | `src/app` 자동 인식. 추가 config plugin 불필요 |
 | 우선순위 | `src/app`과 루트 `app/`이 동시에 있으면 **`src/app`만** 사용됨 — 이동 후 루트 `app/`이 남지 않았는지 확인 |
-| 루트에 둘 파일 | `app.json`, `package.json`, `babel.config.js`, `metro.config.js`, `tsconfig.json`, `global.css` 등 |
+| 루트에 둘 것 | `app.json`, `package.json`, `babel.config.js`, `metro.config.js`, `tsconfig.json`, `global.css`, `assets/` 등 |
 
-`tsconfig.json`의 path alias가 `@/*` → `./*`이면 `./src/*`로 바꿉니다.
+`tsconfig.json`의 path alias를 `./src/*`로 바꾸고, **루트 `assets/`용 별칭을 추가**합니다. (이미지는 `app.json`이 `./assets/...`로도 참조하므로 루트에 유지)
 
 ```json
 {
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/assets/*": ["./assets/*"]
     }
   }
 }
 ```
 
-## 2단계: FSD 폴더
+> 코드에서 이미지는 `require("@/assets/images/...")`로 import합니다. `@/assets` 별칭이 없으면 Metro 번들 시 `Unable to resolve module @/assets/...` 오류가 납니다.
+
+## 2단계: FSD 폴더 (src 아래)
+
+FSD 레이어(`features`·`entities`·`shared`)는 **`src/` 아래**에 둡니다. `wiki`는 FSD가 아니므로 루트에 둡니다.
 
 ```sh
-mkdir -p features entities shared wiki
+mkdir -p src/features src/entities src/shared/ui src/shared/lib src/shared/config wiki
 ```
 
-구조·import 규칙은 `agent.md`를 따릅니다.
+템플릿 데모 컴포넌트를 FSD에 맞게 `src/shared`로 재배치합니다. (1단계에서 옮긴 `src/components`·`src/hooks`·`src/constants` 정리)
+
+| 원본 | 이동 위치 | 비고 |
+|---|---|---|
+| `components/*` (themed-text, themed-view, haptic-tab, ui/icon-symbol 등) | `src/shared/ui/` | 재사용 컴포넌트 |
+| `hooks/*` (use-color-scheme, use-theme-color) | `src/shared/lib/` | 훅·유틸 |
+| `constants/theme.ts` | `src/shared/config/` | 상수·테마 |
+| 데모 전용 (hello-wave, parallax-scroll-view, collapsible, external-link) | 삭제 | 보일러플레이트 불필요 |
+
+각 세그먼트에 `index.ts` 배럴을 만들고, import는 `@/shared/ui`·`@/shared/lib`·`@/shared/config` public API로만 합니다. 이동 후 `@/components`·`@/hooks`·`@/constants` 참조를 새 경로로 바꿉니다. 구조·import 규칙은 `agent.md`를 따릅니다.
 
 ## 3단계: NativeWind
 
@@ -209,23 +234,24 @@ mkdir -p features entities shared wiki
 
 ### 설치
 
+`default` 템플릿(SDK 54)은 이미 `react-native-reanimated`·`react-native-safe-area-context`를 **SDK 54 호환 버전**으로 설치해 둡니다. **무지성 `pnpm add`로 최신 버전을 덮어쓰지 마세요** (SDK 54와 어긋남). 부족한 것만 추가합니다.
+
 ```sh
-pnpm add nativewind@^4.2.1 react-native-reanimated react-native-safe-area-context
+pnpm add nativewind@^4.2.1
 pnpm add -D tailwindcss@^3.4.17
 pnpm exec tailwindcss init
 ```
 
+> reanimated·safe-area-context가 없다면 `pnpm expo install react-native-reanimated react-native-safe-area-context`로 **SDK 호환 버전**을 받습니다 (`pnpm add` 최신 X).
+
 ### tailwind.config.js
+
+FSD가 모두 `src/` 아래이므로 `./src/**` 하나로 커버합니다.
 
 ```js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/app/**/*.{js,jsx,ts,tsx}",
-    "./features/**/*.{js,jsx,ts,tsx}",
-    "./entities/**/*.{js,jsx,ts,tsx}",
-    "./shared/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: { extend: {} },
   plugins: [],
@@ -302,6 +328,18 @@ pnpm exec biome init
 - `formatter.lineWidth`: `100`
 - `files.includes`: `!.pnpm-store`, `!.expo`, `!dist`, `!web-build` 제외
 - `javascript.formatter`: `quoteStyle` `double`, `semicolons` `always`, `trailingCommas` `all`
+- **`global.css` 대응** — Biome 2.x는 Tailwind 지시문 `@tailwind`를 `noUnknownAtRules`로 잡습니다. `*.css`에서 해당 규칙을 끕니다.
+
+```json
+{
+  "overrides": [
+    {
+      "includes": ["**/*.css"],
+      "linter": { "rules": { "suspicious": { "noUnknownAtRules": "off" } } }
+    }
+  ]
+}
+```
 
 `package.json`에 스크립트 추가·교체:
 
