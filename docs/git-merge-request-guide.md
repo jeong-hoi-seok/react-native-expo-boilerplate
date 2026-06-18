@@ -1,6 +1,13 @@
-# Merge Request 작성 가이드
+# MR / PR 작성 가이드
 
-이 문서는 AI가 GitLab MCP로 Merge Request를 생성할 때 `.gitlab/merge_request_templates/Default.md` 템플릿을 올바르게 작성하기 위한 가이드입니다.
+이 프로젝트는 **GitLab** 또는 **GitHub**로 운영할 수 있습니다. GitLab은 Merge Request(MR), GitHub는 Pull Request(PR)를 쓰지만, 아래 규칙은 동일하게 적용됩니다.
+
+| | GitLab | GitHub |
+|---|---|---|
+| 용어 | MR | PR |
+| 템플릿 | `.gitlab/merge_request_templates/Default.md` | `.github/pull_request_template.md` |
+
+AI가 리뷰 요청을 만들 때는 저장소 호스팅에 맞는 템플릿 섹션 구조를 따릅니다. (GitLab MCP, `gh pr create` 등)
 
 ## 1. MR 작성 전 확인
 
@@ -178,7 +185,7 @@ UI 변경이 있는 작업은 작업 결과를 확인할 수 있는 스크린샷
 
 AI가 MR 설명을 작성할 때는 다음 규칙을 따릅니다.
 
-- `.gitlab/merge_request_templates/Default.md`의 섹션 구조를 유지합니다.
+- 플랫폼 템플릿(GitLab `Default.md` / GitHub `pull_request_template.md`)의 섹션 구조를 유지합니다.
 - `docs/commit-convention.md`를 참고해 MR 제목을 작성합니다.
 - 현재 브랜치와 작업 범위를 먼저 확인합니다.
 - MR 작성 전에 참고 커밋 범위를 사용자에게 공유합니다.

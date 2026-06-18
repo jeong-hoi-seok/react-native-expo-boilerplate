@@ -39,7 +39,22 @@ wiki/         # AI·팀 지식 기록
 
 **네이밍** — `docs/naming-convention.md`  
 **커밋** — `docs/commit-convention.md`  
+**MR/PR** — `docs/git-merge-request-guide.md`  
 **wiki** — `docs/ai-wiki-guide.md`
+
+## docs 확인
+
+작업 시작 전 `docs/` 문서를 먼저 확인합니다. 작업 종류에 맞는 문서만 읽어도 됩니다.
+
+| 문서 | 확인 시점 |
+|---|---|
+| `docs/naming-convention.md` | 파일·디렉토리·식별자 추가·변경 |
+| `docs/commit-convention.md` | 커밋 작성 |
+| `docs/git-merge-request-guide.md` | MR/PR 작성 |
+| `docs/ai-wiki-guide.md` | wiki 작성·갱신 |
+
+- `wiki/index.md`가 있으면 코드 수정 전에 함께 확인합니다.
+- docs와 기존 코드 패턴이 다르면 docs를 우선합니다.
 
 ## 작업 원칙
 
