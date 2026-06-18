@@ -51,7 +51,8 @@ React Native + Expo 보일러플레이트입니다. 답변·작업 보고는 한
 Feature-Sliced Design. slice 간 결합은 `index.ts` public API로만 합니다.
 
 ```txt
-app/          # Expo Router 라우트
+src/
+  app/        # Expo Router 라우트 (Expo SDK 54+, src/app 자동 인식)
 features/     # 기능 slice (ui / model / api / lib / index.ts)
 entities/     # 도메인 엔티티
 shared/       # 공용 UI·유틸·타입
@@ -59,6 +60,9 @@ assets/
 docs/
 wiki/         # AI·팀 지식 기록
 ```
+
+- 라우트는 루트 `app/`이 아니라 **`src/app/`** 에 둡니다. [Top-level src directory](https://docs.expo.dev/router/reference/src-directory/)
+- `tsconfig.json` path alias `@/*`는 `./src/*`를 가리킵니다.
 
 **import 규칙**
 
